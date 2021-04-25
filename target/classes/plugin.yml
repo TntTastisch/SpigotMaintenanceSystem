@@ -1,0 +1,6 @@
+name: MaintenanceSystem
+version: 1.0.0
+author: TntTastisch
+main: de.TntTastisch.SpigotMC.MaintenanceSystem
+commands:
+  maintenance:

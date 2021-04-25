@@ -1,0 +1,27 @@
+Maintenance:
+  enabled: false
+  version: '&4&lMAINTENANCE'
+  maxPlayers: 0
+  reason: 'Construction'
+  bypassPermission: 'maintenance.bypass'
+  adminPermission: 'maintenance.admin'
+  Messages:
+    general:
+      prefix: '&8[&4Maintenance&8] &7'
+      noPerms: '%prefix% &cYou do not have enough permission to execute this command!'
+      noPlayer: '%prefix% &cYou must a player to perform this command!'
+      reloadConfig: '%prefix% &7You &asuccessfully &7reloaded the &6Configuration&7.'
+    kick:
+      now: 'This network is now in the maintenance mode for reason %reason%'
+      currently: 'This network is currently in the maintenance mode for reason %reason%'
+    MOTD:
+      normalLine1: '&4ServerNetwork.com &7- &5Minecraft Server &f1.8.X'
+      normalLine2: '     &cMainenance-System by TntTastisch'
+      maintenanceLine1: '&4ServerNetwork.com &7- &5Minecraft Server &f1.8.X'
+      maintenanceLine2: ' &7This network is &ccurrently &7in &cmaintenance'
+    errors:
+      enabled: '%prefix% &cThe maintenance mode is already enabled!'
+      disabled: '%prefix% &cThe maintenance mode is already disabled!'
+    success:
+      enabled: '%prefix% &7You &asuccessfully &7enabled the &cmaintenance mode &7with reason &6%reason%&7.'
+      disabled: '%prefix% &7You &asuccessfully &7disabld the &cmaintenance mode&7.'
