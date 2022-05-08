@@ -1,5 +1,6 @@
 package de.TntTastisch.SpigotMC.listeners;
 
+import de.TntTastisch.SpigotMC.api.Color;
 import de.TntTastisch.SpigotMC.system.Data;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +16,7 @@ public class MainListener implements Listener {
 
         if(Data.enabled){
             if(!(player.hasPermission(Data.byPassPermission) || player.hasPermission(Data.adminPermission))) {
-                player.kickPlayer(Data.maintenanceMessage.replaceAll("&", "§").replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason));
+                player.kickPlayer(Color.apply(Data.maintenanceMessage.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason)));
             }
         }
     }
@@ -24,9 +25,9 @@ public class MainListener implements Listener {
     public void onPing(ServerListPingEvent event){
         event.setMaxPlayers(Data.maxPlayers);
         if(Data.enabled){
-            event.setMotd(Data.maintenanceLine1.replaceAll("&", "§").replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason) + "\n" + Data.maintenanceLine2.replaceAll("&", "§").replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason));
+            event.setMotd(Color.apply(Data.maintenanceLine1.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason) + "\n" + Data.maintenanceLine2.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason)));
         } else {
-            event.setMotd(Data.normalLine1.replaceAll("&", "§").replace("%prefix%", Data.prefix) + "\n" + Data.normalLine2.replaceAll("&", "§").replace("%prefix%", Data.prefix));
+            event.setMotd(Color.apply(Data.normalLine1.replace("%prefix%", Data.prefix) + "\n" + Data.normalLine2.replace("%prefix%", Data.prefix)));
         }
     }
 }

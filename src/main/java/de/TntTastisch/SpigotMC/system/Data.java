@@ -18,6 +18,8 @@ public class Data {
     public static String adminPermission;
     public static String byPassPermission;
 
+    public static String version;
+
     public static String maintenanceLine1;
     public static String maintenanceLine2;
     public static String normalLine1;
@@ -29,6 +31,9 @@ public class Data {
     public static String successfullyDisabled;
 
     public static int maxPlayers;
+    public static String setMaxPlayers;
+    public static String invalidAmount;
+    public static String noNegativeAmount;
     public static String maintenanceReason;
 
     public static String kickMessage;

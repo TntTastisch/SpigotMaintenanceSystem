@@ -1,5 +1,6 @@
 package de.TntTastisch.SpigotMC;
 
+import de.TntTastisch.SpigotMC.api.ProtocolImplementation;
 import de.TntTastisch.SpigotMC.commands.MaintenanceCMD;
 import de.TntTastisch.SpigotMC.listeners.MainListener;
 import de.TntTastisch.SpigotMC.system.Data;
@@ -18,6 +19,7 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
     public void onEnable() {
         createSystemFiles();
         loadMessages();
+        implementAPIs();
 
         Bukkit.getPluginManager().registerEvents(new MainListener(), this);
         this.getCommand("maintenance").setExecutor(new MaintenanceCMD());
@@ -27,20 +29,29 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
     public void onDisable() {
     }
 
+    public void implementAPIs() {
+        ProtocolImplementation pli = new ProtocolImplementation(this);
+        pli.setupIntegration();
+    }
+
     public void loadMessages() {
         Data.prefix = Data.configurationCFG.getString("Maintenance.Messages.general.prefix");
         Data.noPerms = Data.configurationCFG.getString("Maintenance.Messages.general.noPerms");
         Data.noPlayer = Data.configurationCFG.getString("Maintenance.Messages.general.noPlayer");
+        Data.version = Data.configurationCFG.getString("Maintenance.version");
         Data.reloadConfig = Data.configurationCFG.getString("Maintenance.Messages.general.reloadConfig");
         Data.enabled = Data.configurationCFG.getBoolean("Maintenance.enabled");
         Data.adminPermission = Data.configurationCFG.getString("Maintenance.adminPermission");
         Data.byPassPermission = Data.configurationCFG.getString("Maintenance.bypassPermission");
+        Data.setMaxPlayers = Data.configurationCFG.getString("Maintenance.Messages.maxplayers");
         Data.maintenanceLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine1");
         Data.maintenanceLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine2");
         Data.normalLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine1");
         Data.normalLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine2");
         Data.alreadyEnabled = Data.configurationCFG.getString("Maintenance.Messages.errors.enabled");
         Data.alreadyDisabled = Data.configurationCFG.getString("Maintenance.Messages.errors.disabled");
+        Data.invalidAmount = Data.configurationCFG.getString("Maintenance.Messages.errors.invalidAmount");
+        Data.noNegativeAmount = Data.configurationCFG.getString("Maintenance.Messages.errors.noNegativeAmount");
         Data.successfullyEnabled = Data.configurationCFG.getString("Maintenance.Messages.success.enabled");
         Data.successfullyDisabled = Data.configurationCFG.getString("Maintenance.Messages.success.disabled");
         Data.maxPlayers = Data.configurationCFG.getInt("Maintenance.maxPlayers");
@@ -70,7 +81,7 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
         }
 
         if (!Data.configurationCFG.contains("Maintenance.maxPlayers")) {
-            Data.configurationCFG.set("Maintenance.maxPlayers", 0);
+            Data.configurationCFG.set("Maintenance.maxPlayers", 20);
         }
 
         if (!Data.configurationCFG.contains("Maintenance.reason")) {
@@ -83,6 +94,10 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
 
         if (!Data.configurationCFG.contains("Maintenance.adminPermission")) {
             Data.configurationCFG.set("Maintenance.adminPermission", "maintenance.admin");
+        }
+
+        if (!Data.configurationCFG.contains("Maintenance.version")) {
+            Data.configurationCFG.set("Maintenance.version", "&4&lCurrently Maintenance");
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.general.prefix")) {
@@ -102,11 +117,11 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.kick.now")) {
-            Data.configurationCFG.set("Maintenance.Messages.kick.now", "This network is now in the maintenance mode for reason %reason%");
+            Data.configurationCFG.set("Maintenance.Messages.kick.now", "&4ServerNetwork.com\n&7This network is now in &cmaintenance mode&7\n&4Reason &c%reason%\n\n&7You can contact us on\n&cour web www.servernetwork.com");
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.kick.currently")) {
-            Data.configurationCFG.set("Maintenance.Messages.kick.currently", "This network is currently in the maintenance mode for reason %reason%");
+            Data.configurationCFG.set("Maintenance.Messages.kick.currently", "&4ServerNetwork.com\n&7This network is currently in &cmaintenance mode&7\n&4Reason &c%reason%\n\n&7You can contact us on\n&cour web www.servernetwork.com");
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.MOTD.normalLine1")) {
@@ -129,8 +144,20 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
             Data.configurationCFG.set("Maintenance.Messages.errors.enabled", "%prefix% &cThe maintenance mode is already enabled!");
         }
 
+        if (!Data.configurationCFG.contains("Maintenance.Messages.maxplayers")) {
+            Data.configurationCFG.set("Maintenance.Messages.maxplayers", "%prefix% You &asuccessfully set the &6maximum number of players &7to &c%max%&7.");
+        }
+
         if(!Data.configurationCFG.contains("Maintenance.Messages.errors.disabled")) {
             Data.configurationCFG.set("Maintenance.Messages.errors.disabled", "%prefix% &cThe maintenance mode is already disabled!");
+        }
+
+        if(!Data.configurationCFG.contains("Maintenance.Messages.errors.noNegativeAmount")) {
+            Data.configurationCFG.set("Maintenance.Messages.errors.disabled", "%prefix% &cYou can not set the maximum number of players in the negative numbers!");
+        }
+
+        if(!Data.configurationCFG.contains("Maintenance.Messages.errors.invalidAmount")) {
+            Data.configurationCFG.set("Maintenance.Messages.errors.disabled", "%prefix% &cPlease enter a valid amount!");
         }
 
         if(!Data.configurationCFG.contains("Maintenance.Messages.success.enabled")) {
@@ -138,7 +165,7 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
         }
 
         if(!Data.configurationCFG.contains("Maintenance.Messages.success.disabled")) {
-            Data.configurationCFG.set("Maintenance.Messages.success.disabled", "%prefix% &7You &asuccessfully &7disabld the &cmaintenance mode&7.");
+            Data.configurationCFG.set("Maintenance.Messages.success.disabled", "%prefix% &7You &asuccessfully &7disabled the &cmaintenance mode&7.");
         }
 
         try {
