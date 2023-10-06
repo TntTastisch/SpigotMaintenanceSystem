@@ -15,10 +15,14 @@ Maintenance:
       now: 'This network is now in the maintenance mode for reason %reason%'
       currently: 'This network is currently in the maintenance mode for reason %reason%'
     MOTD:
+      enabled: true
       normalLine1: '&4ServerNetwork.com &7- &5Minecraft Server &f1.8.X'
-      normalLine2: '     &cMainenance-System by TntTastisch'
+      normalLine2: '     &cMaintenance-System by TntTastisch'
       maintenanceLine1: '&4ServerNetwork.com &7- &5Minecraft Server &f1.8.X'
       maintenanceLine2: ' &7This network is &ccurrently &7in &cmaintenance'
+      success:
+        enabled: '%prefix% &7You &asuccessfully &7enabled the &cmotd&7.'
+        disabled: '%prefix% &7You &asuccessfully &7disabld the &cmotd&7.'
     errors:
       enabled: '%prefix% &cThe maintenance mode is already enabled!'
       disabled: '%prefix% &cThe maintenance mode is already disabled!'

@@ -24,10 +24,12 @@ public class MainListener implements Listener {
     @EventHandler
     public void onPing(ServerListPingEvent event){
         event.setMaxPlayers(Data.maxPlayers);
-        if(Data.enabled){
-            event.setMotd(Color.apply(Data.maintenanceLine1.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason) + "\n" + Data.maintenanceLine2.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason)));
-        } else {
-            event.setMotd(Color.apply(Data.normalLine1.replace("%prefix%", Data.prefix) + "\n" + Data.normalLine2.replace("%prefix%", Data.prefix)));
+        if(Data.maintenanceMotdEnabled) {
+            if (Data.enabled) {
+                event.setMotd(Color.apply(Data.maintenanceLine1.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason) + "\n" + Data.maintenanceLine2.replace("%prefix%", Data.prefix).replace("%reason%", Data.maintenanceReason)));
+            } else {
+                event.setMotd(Color.apply(Data.normalLine1.replace("%prefix%", Data.prefix) + "\n" + Data.normalLine2.replace("%prefix%", Data.prefix)));
+            }
         }
     }
 }

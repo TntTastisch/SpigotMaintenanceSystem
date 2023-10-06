@@ -44,8 +44,11 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
         Data.adminPermission = Data.configurationCFG.getString("Maintenance.adminPermission");
         Data.byPassPermission = Data.configurationCFG.getString("Maintenance.bypassPermission");
         Data.setMaxPlayers = Data.configurationCFG.getString("Maintenance.Messages.maxplayers");
+        Data.maintenanceMotdEnabled = Data.configurationCFG.getBoolean("Maintenance.Messages.MOTD.enabled");
         Data.maintenanceLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine1");
         Data.maintenanceLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine2");
+        Data.successfullyEnabledMotd = Data.configurationCFG.getString("Maintenance.Messages.MOTD.success.enabled");
+        Data.successfullyDisabledMotd = Data.configurationCFG.getString("Maintenance.Messages.MOTD.success.disabled");
         Data.normalLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine1");
         Data.normalLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine2");
         Data.alreadyEnabled = Data.configurationCFG.getString("Maintenance.Messages.errors.enabled");
@@ -101,7 +104,7 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.general.prefix")) {
-            Data.configurationCFG.set("Maintenance.Messages.general.prefix", "&8[&4Maintenance&8] &7");
+            Data.configurationCFG.set("Maintenance.Messages.general.prefix", "&8[&4Maintenance&8]&7");
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.general.noPerms")) {
@@ -124,6 +127,10 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
             Data.configurationCFG.set("Maintenance.Messages.kick.currently", "&4ServerNetwork.com\n&7This network is currently in &cmaintenance mode&7\n&4Reason &c%reason%\n\n&7You can contact us on\n&cour web www.servernetwork.com");
         }
 
+        if (!Data.configurationCFG.contains("Maintenance.Messages.MOTD.enabled")) {
+            Data.configurationCFG.set("Maintenance.Messages.MOTD.enabled", true);
+        }
+
         if (!Data.configurationCFG.contains("Maintenance.Messages.MOTD.normalLine1")) {
             Data.configurationCFG.set("Maintenance.Messages.MOTD.normalLine1", "&4ServerNetwork.com &7- &5Minecraft Server &f1.8.X");
         }
@@ -140,12 +147,20 @@ public class MaintenanceSystem extends JavaPlugin implements Listener {
             Data.configurationCFG.set("Maintenance.Messages.MOTD.maintenanceLine2", " &7This network is &ccurrently &7in &cmaintenance");
         }
 
+        if(!Data.configurationCFG.contains("Maintenance.Messages.MOTD.success.enabled")) {
+            Data.configurationCFG.set("Maintenance.Messages.MOTD.success.enabled", "%prefix% &7You &asuccessfully &7enabled the &cmotd&7.");
+        }
+
+        if(!Data.configurationCFG.contains("Maintenance.Messages.MOTD.success.disabled")) {
+            Data.configurationCFG.set("Maintenance.Messages.MOTD.success.disabled", "%prefix% &7You &asuccessfully &7disabled the &cmotd&7.");
+        }
+
         if(!Data.configurationCFG.contains("Maintenance.Messages.errors.enabled")) {
             Data.configurationCFG.set("Maintenance.Messages.errors.enabled", "%prefix% &cThe maintenance mode is already enabled!");
         }
 
         if (!Data.configurationCFG.contains("Maintenance.Messages.maxplayers")) {
-            Data.configurationCFG.set("Maintenance.Messages.maxplayers", "%prefix% You &asuccessfully set the &6maximum number of players &7to &c%max%&7.");
+            Data.configurationCFG.set("Maintenance.Messages.maxplayers", "%prefix% &7You &asuccessfully &7set the &6maximum number of players &7to &c%max%&7.");
         }
 
         if(!Data.configurationCFG.contains("Maintenance.Messages.errors.disabled")) {

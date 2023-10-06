@@ -1,5 +1,5 @@
 name: MaintenanceSystem
-version: 1.0.1
+version: ${project.version}
 author: TntTastisch
 main: de.TntTastisch.SpigotMC.MaintenanceSystem
 depend:

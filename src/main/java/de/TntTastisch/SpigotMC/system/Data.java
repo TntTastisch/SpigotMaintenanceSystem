@@ -20,6 +20,7 @@ public class Data {
 
     public static String version;
 
+    public static boolean maintenanceMotdEnabled;
     public static String maintenanceLine1;
     public static String maintenanceLine2;
     public static String normalLine1;
@@ -29,6 +30,9 @@ public class Data {
     public static String alreadyDisabled;
     public static String successfullyEnabled;
     public static String successfullyDisabled;
+
+    public static String successfullyEnabledMotd;
+    public static String successfullyDisabledMotd;
 
     public static int maxPlayers;
     public static String setMaxPlayers;

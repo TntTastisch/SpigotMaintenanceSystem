@@ -16,16 +16,25 @@ public class MaintenanceCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if(commandSender.hasPermission(Data.adminPermission)){
-            if(strings.length == 0){
+        if (commandSender.hasPermission(Data.adminPermission)) {
+            if (strings.length == 0) {
                 commandSender.sendMessage(Color.apply("&8&m--------------&r &4&lMAINTENANCE &8&m--------------&r"));
                 commandSender.sendMessage(Color.apply("&e/maintenance reload &8- &7Reload the config"));
-                commandSender.sendMessage(Color.apply("&e/maintenance setMaxPlayers &8- &7Set the maxplayers"));
+                commandSender.sendMessage(Color.apply("&e/maintenance setMaxPlayers <Amount> &8- &7Set the maxplayers"));
+                commandSender.sendMessage(Color.apply("&e/maintenance motd &8- &7Enable/Disable the motd"));
                 commandSender.sendMessage(Color.apply("&e/maintenance <Reason> &8- &7Activate the maintenance mode with reason"));
                 commandSender.sendMessage(Color.apply("&e/maintenance off &8- &7Deactivate the maintenance mode"));
                 commandSender.sendMessage(Color.apply("&8&m--------------&r &4&lMAINTENANCE &8&m--------------&r"));
-            } else if(strings.length >= 1) {
-                if(strings[0].equalsIgnoreCase("reload")){
+                return false;
+            }
+
+            switch (strings[0].toLowerCase()) {
+                case "reload": {
+                    if (strings.length != 1) {
+                        commandSender.sendMessage(Color.apply(Data.prefix + "&e/maintenance reload"));
+                        return false;
+                    }
+
                     try {
                         Data.configurationCFG.load(Data.configuration);
 
@@ -38,8 +47,11 @@ public class MaintenanceCMD implements CommandExecutor {
                         Data.adminPermission = Data.configurationCFG.getString("Maintenance.adminPermission");
                         Data.byPassPermission = Data.configurationCFG.getString("Maintenance.bypassPermission");
                         Data.setMaxPlayers = Data.configurationCFG.getString("Maintenance.Messages.maxplayers");
+                        Data.maintenanceMotdEnabled = Data.configurationCFG.getBoolean("Maintenance.Messages.MOTD.enabled");
                         Data.maintenanceLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine1");
                         Data.maintenanceLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.maintenanceLine2");
+                        Data.successfullyEnabledMotd = Data.configurationCFG.getString("Maintenance.Messages.MOTD.success.enabled");
+                        Data.successfullyDisabledMotd = Data.configurationCFG.getString("Maintenance.Messages.MOTD.success.disabled");
                         Data.normalLine1 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine1");
                         Data.normalLine2 = Data.configurationCFG.getString("Maintenance.Messages.MOTD.normalLine2");
                         Data.alreadyEnabled = Data.configurationCFG.getString("Maintenance.Messages.errors.enabled");
@@ -57,10 +69,17 @@ public class MaintenanceCMD implements CommandExecutor {
                     } catch (IOException | InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
-                } else if(strings[0].equalsIgnoreCase("setMaxPlayers")){
+                    break;
+                }
+                case "setmaxplayers": {
+                    if (strings.length != 2) {
+                        commandSender.sendMessage(Color.apply(Data.prefix + "&e/maintenance setMaxPlayers <Amount>"));
+                        return false;
+                    }
+
                     try {
                         int maxPlayers = Integer.parseInt(strings[1]);
-                        if(maxPlayers > 0) {
+                        if (maxPlayers > 0) {
                             Data.maxPlayers = maxPlayers;
                             Data.configurationCFG.set("Maintenance.maxPlayers", maxPlayers);
 
@@ -69,15 +88,23 @@ public class MaintenanceCMD implements CommandExecutor {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            commandSender.sendMessage(Color.apply(Data.prefix + Data.setMaxPlayers.replaceAll("%max%", String.valueOf(maxPlayers))));
-                        } else {
-                            commandSender.sendMessage(Color.apply(Data.noNegativeAmount.replace("%prefix%", Data.prefix)));
+                            commandSender.sendMessage(Color.apply(Data.setMaxPlayers.replaceAll("%max%", String.valueOf(maxPlayers)).replace("%prefix%", Data.prefix)));
+                            return false;
                         }
+                        commandSender.sendMessage(Color.apply(Data.noNegativeAmount.replace("%prefix%", Data.prefix)));
+
                     } catch (NumberFormatException e) {
                         commandSender.sendMessage(Color.apply(Data.invalidAmount.replace("%prefix%", Data.prefix)));
                     }
-                } else if(strings[0].equalsIgnoreCase("off")){
-                    if(Data.enabled){
+                    break;
+                }
+                case "off": {
+                    if (strings.length != 1) {
+                        commandSender.sendMessage(Color.apply(Data.prefix + "&e/maintenance off"));
+                        return false;
+                    }
+
+                    if (Data.enabled) {
                         Data.enabled = false;
                         Data.configurationCFG.set("Maintenance.enabled", false);
 
@@ -88,14 +115,49 @@ public class MaintenanceCMD implements CommandExecutor {
                         }
 
                         commandSender.sendMessage(Color.apply(Data.successfullyDisabled.replace("%prefix%", Data.prefix)));
-                    } else {
-                        commandSender.sendMessage(Color.apply(Data.alreadyDisabled.replace("%prefix%", Data.prefix)));
+                        return false;
                     }
-                } else {
-                    if(!Data.enabled) {
+                    commandSender.sendMessage(Color.apply(Data.alreadyDisabled.replace("%prefix%", Data.prefix)));
+
+                    break;
+                }
+                case "motd": {
+                    if (strings.length != 1) {
+                        commandSender.sendMessage(Color.apply(Data.prefix + "&e/maintenance motd"));
+                        return false;
+                    }
+
+                    if (Data.maintenanceMotdEnabled) {
+                        Data.maintenanceMotdEnabled = false;
+                        Data.configurationCFG.set("Maintenance.Messages.MOTD.enabled", false);
+
+                        try {
+                            Data.configurationCFG.save(Data.configuration);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        commandSender.sendMessage(Color.apply(Data.successfullyDisabledMotd.replace("%prefix%", Data.prefix)));
+                        return false;
+                    }
+
+                    Data.maintenanceMotdEnabled = true;
+                    Data.configurationCFG.set("Maintenance.Messages.MOTD.enabled", true);
+
+                    try {
+                        Data.configurationCFG.save(Data.configuration);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    commandSender.sendMessage(Color.apply(Data.successfullyEnabledMotd.replace("%prefix%", Data.prefix)));
+
+                    break;
+                }
+                default: {
+                    if (!Data.enabled) {
                         String reason = "";
                         for (int i = 0; i != strings.length; i++) {
-                            reason = reason + " " + strings[i];
+                            reason += strings[i] + " ";
                         }
 
                         Data.maintenanceReason = reason;
@@ -113,19 +175,20 @@ public class MaintenanceCMD implements CommandExecutor {
 
                         commandSender.sendMessage(Color.apply(Data.successfullyEnabled.replace("%prefix%", Data.prefix).replace("%reason%", reason)));
 
-                        for(Player all : Bukkit.getOnlinePlayers()){
-                            if(!(all.hasPermission(Data.byPassPermission) || all.hasPermission(Data.adminPermission))) {
+                        for (Player all : Bukkit.getOnlinePlayers()) {
+                            if (!(all.hasPermission(Data.byPassPermission) || all.hasPermission(Data.adminPermission))) {
                                 all.kickPlayer(Color.apply(Data.kickMessage.replace("%prefix%", Data.prefix).replace("%reason%", reason)));
                             }
                         }
-                    } else {
-                        commandSender.sendMessage(Color.apply(Data.alreadyEnabled.replace("%prefix%", Data.prefix)));
+                        return false;
                     }
+                    commandSender.sendMessage(Color.apply(Data.alreadyEnabled.replace("%prefix%", Data.prefix)));
+
                 }
             }
-        } else {
-            commandSender.sendMessage(Color.apply(Data.noPerms.replace("%prefix%", Data.prefix)));
+            return false;
         }
+        commandSender.sendMessage(Color.apply(Data.noPerms.replace("%prefix%", Data.prefix)));
         return false;
     }
 }
